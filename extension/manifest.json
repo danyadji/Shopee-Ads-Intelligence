@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Shopee Intel Collector",
+  "version": "0.1.0",
+  "description": "Ambil data produk dari halaman Shopee yang Anda buka, lalu kirim ke dashboard Shopee Ads Intelligence.",
+  "permissions": ["activeTab", "storage", "scripting"],
+  "host_permissions": ["https://shopee.co.id/*", "http://localhost/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Kirim produk ke dashboard"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://shopee.co.id/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

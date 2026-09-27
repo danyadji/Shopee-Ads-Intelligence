@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<style>
+  body { width: 320px; margin: 0; padding: 12px; font-family: system-ui, sans-serif; font-size: 13px; color: #14181f; }
+  h1 { font-size: 14px; margin: 0 0 8px; }
+  label { display: block; margin-top: 8px; font-weight: 600; }
+  input { width: 100%; box-sizing: border-box; min-height: 36px; margin-top: 4px; padding: 6px 8px; border: 1px solid #e8eaef; border-radius: 8px; }
+  .row { display: flex; gap: 8px; margin-top: 12px; }
+  button { flex: 1; min-height: 40px; border-radius: 8px; border: 1px solid #14181f; background: #14181f; color: #fff; font-weight: 700; cursor: pointer; }
+  button.alt { background: #fff; color: #14181f; }
+  button:disabled { opacity: 0.4; }
+  #status { margin-top: 8px; min-height: 18px; color: #6b7280; }
+  #items { margin-top: 8px; max-height: 220px; overflow-y: auto; }
+  #items li { list-style: none; margin: 0 0 6px; padding: 8px; border: 1px solid #e8eaef; border-radius: 8px; }
+  #items ul { margin: 0; padding: 0; }
+  #items button { min-height: 36px; font-size: 12px; }
+  .hint { color: #6b7280; font-size: 12px; margin-top: 8px; }
+</style>
+</head>
+<body>
+  <h1>Shopee Intel Collector</h1>
+  <div id="status" role="status">Membaca halaman...</div>
+  <div id="single" hidden>
+    <label>Judul<input id="fTitle" /></label>
+    <label>Harga (Rp)<input id="fPrice" inputmode="numeric" /></label>
+    <label>Terjual<input id="fSold" inputmode="numeric" /></label>
+    <label>Rating<input id="fRating" inputmode="decimal" /></label>
+    <label>URL Dashboard<input id="fDash" /></label>
+    <div class="row">
+      <button id="btnSend" type="button">Kirim</button>
+      <button id="btnCopy" type="button" class="alt">Salin</button>
+    </div>
+  </div>
+  <div id="items" hidden>
+    <div class="row" style="margin-top:0">
+      <button id="btnSendAll" type="button">Kirim semua ke dashboard</button>
+    </div>
+    <div class="row">
+      <button id="btnReread" type="button" class="alt">Baca ulang halaman</button>
+    </div>
+    <ul id="list"></ul>
+  </div>
+  <p class="hint">Hanya membaca halaman yang Anda buka. Periksa angka sebelum dikirim, Shopee sering mengubah tampilan.</p>
+  <script src="popup.js"></script>
+</body>
+</html>
