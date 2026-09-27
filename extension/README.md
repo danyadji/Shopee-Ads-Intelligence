@@ -15,7 +15,7 @@ tidak berjalan di latar, hanya bekerja saat popup dibuka.
 1. Buka halaman produk kompetitor di `shopee.co.id`.
 2. Klik ikon extension. Periksa judul, harga, terjual, rating.
 3. Tekan Kirim (dashboard harus jalan) atau Salin lalu Impor di section Kompetitor.
-4. Di halaman pencarian, extension menampilkan sampai 10 kartu. Pilih satu untuk mengisi form.
+4. Di halaman pencarian, extension menampilkan sampai 60 kartu yang sudah tampil di layar. Scroll pelan sampai bawah dulu agar semua kartu termuat, lalu buka popup dan kirim sekaligus.
 
 ## Batas
 

@@ -75,15 +75,16 @@
   const extractSearch = () => {
     const out = [];
     const seen = new Set();
-    const links = document.querySelectorAll('a[href*="-i."]');
-    for (const a of links) {
-      const href = a.href;
-      if (seen.has(href)) continue;
-      const text = a.innerText || "";
-      if (!/terjual/i.test(text)) continue;
-      const priceM = text.match(/Rp\s?([\d.]+)/);
-      const soldM = text.match(/([\d.,]+\s*(?:RB|JT|ribu|juta)?)\s*[Tt]erjual/);
-      const lines = text
+    const push = (title, price, sold, url) => {
+      title = String(title || "").slice(0, 200).trim();
+      if (!title) return;
+      const key = url || title;
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push({ title, price, sold, rating: 0, url: url || location.href });
+    };
+    const titleOf = (text) =>
+      String(text || "")
         .split("\n")
         .map((s) => s.trim())
         .filter(
@@ -92,21 +93,46 @@
             !/^Rp/i.test(s) &&
             !/terjual/i.test(s) &&
             !/^\d+\s*\/\s*5/.test(s) &&
-            !/diskon|promo|star|ad\b/i.test(s),
+            !/diskon|promo|star|^\d+%|^ad$/i.test(s),
         )
-        .sort((x, y) => y.length - x.length);
-      if (!lines[0]) continue;
-      seen.add(href);
-      out.push({
-        title: lines[0].slice(0, 200),
-        price: priceM ? num(priceM[1]) : 0,
-        sold: soldM ? num(soldM[1]) : 0,
-        rating: 0,
-        url: href,
-      });
-      if (out.length >= 50) break;
+        .sort((x, y) => y.length - x.length)[0] || "";
+    // Strategi A: link produk langsung.
+    document.querySelectorAll('a[href*="-i."]').forEach((a) => {
+      const t = a.innerText || "";
+      if (!/terjual/i.test(t)) return;
+      const priceM = t.match(/Rp\s?([\d.]+)/);
+      const soldM = t.match(/([\d.,]+\s*(?:RB|JT|ribu|juta)?)\s*[Tt]erjual/);
+      push(titleOf(t), priceM ? num(priceM[1]) : 0, soldM ? num(soldM[1]) : 0, a.href);
+    });
+    // Strategi B: panjat dari teks Terjual ke kartu terdekat.
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node = walker.nextNode();
+    let guard = 0;
+    while (node && guard++ < 4000) {
+      const v = node.textContent.trim();
+      if (/terjual/i.test(v) && v.length < 60) {
+        let el = node.parentElement;
+        let card = null;
+        let depth = 0;
+        while (el && depth++ < 7) {
+          const t = el.innerText || "";
+          if (/Rp\s?[\d.]+/.test(t) && t.length < 2000) {
+            card = el;
+            break;
+          }
+          el = el.parentElement;
+        }
+        if (card) {
+          const t = card.innerText || "";
+          const priceM = t.match(/Rp\s?([\d.]+)/);
+          const soldM = t.match(/([\d.,]+\s*(?:RB|JT|ribu|juta)?)\s*[Tt]erjual/);
+          const link = card.querySelector ? card.querySelector('a[href*="-i."]') : null;
+          push(titleOf(t), priceM ? num(priceM[1]) : 0, soldM ? num(soldM[1]) : 0, link ? link.href : "");
+        }
+      }
+      node = walker.nextNode();
     }
-    return out;
+    return out.slice(0, 60);
   };
 
   chrome.runtime.onMessage.addListener((msg, _sender, send) => {

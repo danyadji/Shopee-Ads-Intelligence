@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { formatIDR } from "@/lib/metrics";
+import { saveDecision } from "@/lib/decisions";
 
 export type OwnProduct = { name: string; code: string; price: number };
 
@@ -412,7 +413,27 @@ export default function Competitor({ products }: { products: OwnProduct[] }) {
         {items.length > 5 && <p className="mt-2 text-sm text-muted">AI memakai 5 kompetitor pertama.</p>}
         {state === "loading" && <p className="mt-3 text-sm text-muted" aria-live="polite">Menyusun strategi, mohon tunggu.</p>}
         {state === "error" && <p className="mt-3 rounded-[10px] border border-border bg-background p-3 text-sm" role="alert">{error}</p>}
-        {state === "done" && <div className="mt-3 rounded-[10px] border border-border bg-background p-4 text-sm leading-6 whitespace-pre-line">{text}</div>}
+        {state === "done" && (
+          <>
+            <div className="mt-3 rounded-[10px] border border-border bg-background p-4 text-sm leading-6 whitespace-pre-line">{text}</div>
+            <button
+              type="button"
+              onClick={() => {
+                saveDecision({
+                  id: `${Date.now()}`,
+                  date: new Date().toISOString().slice(0, 10),
+                  action: question.trim() || "Tindak lanjut strategi kompetitor",
+                  reason: "Dari strategi Kompetitor",
+                  expected: text.slice(0, 300),
+                });
+                setInboxNote("Tersimpan sebagai keputusan. Lihat section Catatan Keputusan.");
+              }}
+              className="mt-2 min-h-[44px] rounded-[10px] border border-border px-4 text-sm font-semibold"
+            >
+              Simpan sebagai keputusan
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

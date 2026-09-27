@@ -49,7 +49,7 @@ async function readPage(tab) {
       status.textContent = "Tidak ada kartu produk terbaca. Scroll lalu coba lagi.";
       return;
     }
-    status.textContent = `${res.items.length} produk terbaca. Pilih untuk mengisi form.`;
+    status.textContent = `${res.items.length} produk terbaca dari yang tampil di layar. Scroll untuk memuat lebih banyak, lalu Baca ulang.`;
     res.items.forEach((it) => {
       const li = document.createElement("li");
       const p = document.createElement("p");
